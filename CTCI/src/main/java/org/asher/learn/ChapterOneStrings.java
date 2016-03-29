@@ -2,18 +2,22 @@ package org.asher.learn;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Queue;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 // ASCII - 7 bits - 2^7 -> 0 - 128
 // UTF-8 - 8 bits - 1 byte -> 0 - 256 with 1st 128 characters same as ASCII
-// UTF-32 - 32 bits - 4 bytes
+// UTF-32 - 32 bits - 4 bytes - should fit int but doesn;t
 public class ChapterOneStrings {
 	public static void run() {
 		System.out.println("Running Chapter 1 - Strings");
 		question1();
 		question2();
 		question3();
+		question4();
+		question5();
+		question6();
 	}
 
 	private static void question1() {
@@ -186,6 +190,171 @@ public class ChapterOneStrings {
 			}
 		}
 		return new String(charArray);
+	}
+	
+	private static void question4() {
+		System.out.println("Q4. Check if the String can be converted to a palindrome - ignore whitespaces");
+		// Using boolean array
+		checkArgument(solution4_1("Palindro Pal\tindro", "UTF-8"));
+		checkArgument(solution4_1("Palindro i\tPalindro", "UTF-16"));
+		checkArgument(solution4_1("Palindro\t\t\tPalindro", "UTF-8"));
+		checkArgument(solution4_1(" ", "UTF-8"));
+		checkArgument(solution4_1("  ", "UTF-16"));
+		checkArgument(solution4_1("", "ASCII"));
+		checkArgument(! solution4_1("JA\tI", "UTF-16"));
+		checkArgument(! solution4_1("JA\tA  \nI", "UTF-8"));
+		
+		// Using bit vector
+		checkArgument(solution4_2("Palindro Pal\tindro"));
+		checkArgument(solution4_2("Palindro i\tPalindro"));
+		checkArgument(solution4_2("Palindro\t\t\tPalindro"));
+		checkArgument(solution4_2(" "));
+		checkArgument(solution4_2("  "));
+		checkArgument(solution4_2(""));
+		checkArgument(! solution4_2("JA\tI"));
+		checkArgument(! solution4_2("JA\tA  \nI"));
+	}
+
+
+	// Using boolean array
+	private static boolean solution4_1(String str, String charset) {
+		String string = str.replaceAll("\\s+", "");
+		boolean[] letters = new boolean[maxCharacters(charset)]; // default is false
+		for(int i=0; i<string.length(); i++) 
+			letters[string.charAt(i)] = ! letters[string.charAt(i)];
+		
+		boolean sawOnce = false;
+		for(boolean letter : letters) {
+			if(sawOnce && letter)
+				return false;
+			else if(letter)
+				sawOnce = true;
+		}
+		return true;
+	}
+
+	// Using bit vector which supports upto UTF-64
+	private static boolean solution4_2(String str) {
+		int bitVector = 0;
+		String string = str.replaceAll("\\s+", "");
+		for(int i = 0; i<string.length(); i++) {
+			bitVector = toggle(bitVector, string.charAt(i));
+		}
+		
+		// check if only one bit set
+		// if only one bit is in a number set then the number is a power of 2 (not just a multiple)
+		// hence number - 1 causes all bits < then set bit to be 1 and hence (number) & (number - 1) = 0
+		// eg:- 0100 - 1 = 0011 , 1011 - 1 = 1010
+		if(bitVector == 0 || (bitVector & (bitVector - 1)) == 0)
+			return true;
+		return false;
+	}
+	
+	private static int toggle(int bitVector, char position) {
+		if((bitVector & (1<<position)) == 0) {
+			// bit is unset - set it
+			bitVector |= (1<<position);
+		} else {
+			// bit is set - unset it
+			bitVector &= ~(1<<position); 
+		}
+		return bitVector;
+	}
+	
+	private static void question5() {
+		System.out.println("Q5. Check if the 2 strings are atmostone edit apart, an edit is an insert, delete or replace");
+		checkArgument(solution5_1("Jai", "Jai"));
+		checkArgument(solution5_1("", "i"));
+		checkArgument(solution5_1("ai", "i"));
+		checkArgument(solution5_1("iS", "iSl"));
+		checkArgument(! solution5_1("JiS", "iSl"));
+		checkArgument(! solution5_1("JSp", "iSl"));
+		checkArgument(! solution5_1("JSpo", "iSp"));
+		checkArgument(solution5_1("JSpo", "JSto"));
+		checkArgument(! solution5_1("JSpo", "Jpto"));
+	}
+
+	private static boolean solution5_1(String string1, String string2) {
+		if(string1.length() > string2.length()) {
+			return isOneAddAway(string1, string2);
+		} else if(string1.length() < string2.length()) {
+			return isOneAddAway(string2, string1);
+		}
+		// Equals
+		return isOneReplaceAway(string1, string2);
+	}
+
+	private static boolean isOneAddAway(String large, String small) {
+		if(large.length() - small.length() > 1) {
+			return false;
+		}
+		boolean diffFound = false;
+		int largeIndex = 0;
+		for(int i = 0; i<small.length(); i++) {
+			if(small.charAt(i) != large.charAt(largeIndex)) {
+				if(diffFound) // one add already done.
+					return false;
+				diffFound = true;
+				largeIndex++;
+			}
+			largeIndex++;
+		}
+		return true;
+		
+	}
+
+	private static boolean isOneReplaceAway(String string1, String string2) {
+		boolean diffFound = false;
+		for(int i =0; i<string1.length(); i++) {
+			if(string1.charAt(i) != string2.charAt(i)) {
+				if(diffFound) // one replace already done
+					return false;
+				diffFound = true;
+			}
+		}
+		return true;
+	}
+	
+	private static void question6() {
+		System.out.println("Q6. Compress adjacent characters in a string");
+		checkArgument(solution6_1("abca").equals("abca"));
+		checkArgument(solution6_1("abba").equals("ab2a"));
+		checkArgument(solution6_1("a").equals("a"));
+		checkArgument(solution6_1("aaa").equals("a3"));
+		checkArgument(solution6_1("abcc").equals("abc2"));
+	}
+
+	
+	private static String solution6_1(String string) {
+		if(string.length() < 2)
+			return string;
+		StringBuilder builder = new StringBuilder();
+		char[] ar = string.toCharArray();
+		int count = 1;
+		char previous = ar[0];
+		for(int i = 1; i<ar.length; i++) {
+			if(ar[i] != previous) {
+				if(count > 1) {
+					builder.append(previous);
+					builder.append(count);
+				} else {
+					builder.append(previous);
+				}
+				count = 1;
+				previous = ar[i];
+			} else {
+				count ++;
+			}
+		}
+		
+		// handling last character
+		if(count > 1) {
+			builder.append(previous);
+			builder.append(count);			
+		} else {
+			builder.append(previous);
+		}
+		return builder.toString();
 	}
 
 	private static int maxCharacters(String charset) {
