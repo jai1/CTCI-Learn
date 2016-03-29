@@ -3,4 +3,11 @@
   <groupId>org.asher.learn</groupId>
   <artifactId>CTCI</artifactId>
   <version>0.1</version>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.google.guava</groupId>
+  		<artifactId>guava</artifactId>
+  		<version>r05</version>
+  	</dependency>
+  </dependencies>
 </project>
