@@ -1,44 +1,44 @@
 #Include Directory
-IDIR = "inc"
+IDIR = ./inc
 
 #Lib Directory
-LDIR = "lib"
+LDIR = lib
 
 #Compiler
-CC = gcc
+CC = g++
 
 #Compile Flags
 CXXFLAGS =	-O2 -g -Wall -fmessage-length=0 -I$(IDIR)
 
 #Source Directory
-SDIR = "src"
+SDIR = src
 
 #Object Directory
-ODIR = "obj"
+ODIR = obj
 
 #test directory 
-TDIR="tests"
+TDIR = tests
 
 #Bin Directory
-BDIR="bin"
+BDIR = bin
 
 #library
-LIBS =	libUsingGoogleTest.so
+LIBS =	$(LDIR)/libUsingGoogleTest.so
 
 #Target
 TARGET=$(BDIR)/main
 
 $(ODIR)/%.o: $(SDIR)/%.cpp
+	$(CC) -lstdc++ -fPIC $(CXXFLAGS) -c -o $@ $< 
 
-$(LIBS): *.o
-	$(CC) -c -o $(CFLAGS) $@ $^
+$(LIBS): $(ODIR)/Utils.o
+	$(CC) -shared -o $@ $^ 
 
-$(TARGET): $(LIBS)
-	$(CC) -c -o $(CFLAGS) $@ $< 
+$(TARGET): $(ODIR)/main.o $(LIBS)
+	$(CC) $(CXXFLAGS) -c -o $@ $<
 	
-
 all: $(TARGET) 
 	$(CC) 
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(ODIR)/*.o $(TARGET) $(LDIR)/*.so
