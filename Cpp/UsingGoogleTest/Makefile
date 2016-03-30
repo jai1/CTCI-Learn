@@ -1,3 +1,9 @@
+
+# A.cpp : A.o B.o
+# $@ object to be built (A.cpp)
+# $< 1st argument - A.o
+# $^ - all arguments (space separated) - A.o B.o
+
 #Include Directory
 IDIR = ./inc
 
@@ -8,7 +14,7 @@ LDIR = lib
 CC = g++
 
 #Compile Flags
-CXXFLAGS =	-O2 -g -Wall -fmessage-length=0 -I$(IDIR)
+CXXFLAGS = -fprofile-arcs -ftest-coverage -O2 -g -Wall -fmessage-length=0 -I$(IDIR)
 
 #Source Directory
 SDIR = src
@@ -23,7 +29,7 @@ TDIR = tests
 BDIR = bin
 
 #library
-LIBS =	$(LDIR)/libUsingGoogleTest.so
+LIB =	libUsingGoogleTest.so
 
 #Target
 TARGET=$(BDIR)/main
@@ -31,14 +37,13 @@ TARGET=$(BDIR)/main
 $(ODIR)/%.o: $(SDIR)/%.cpp
 	$(CC) -lstdc++ -fPIC $(CXXFLAGS) -c -o $@ $< 
 
-$(LIBS): $(ODIR)/Utils.o
-	$(CC) -shared -o $@ $^ 
+$(LIB): $(ODIR)/Utils.o
+	$(CC) -shared -o $(LDIR)/$@ $^ -lgcov 
 
-$(TARGET): $(ODIR)/main.o $(LIBS)
-	$(CC) $(CXXFLAGS) -c -o $@ $<
+$(TARGET): $(LIB)
+	$(CC) -fprofile-arcs -ftest-coverage -o $@ $(TDIR)/main.cpp -L $(LDIR) -l UsingGoogleTest -I $(IDIR) 
 	
 all: $(TARGET) 
-	$(CC) 
 
 clean:
 	rm -f $(ODIR)/*.o $(TARGET) $(LDIR)/*.so
