@@ -3,6 +3,7 @@ package org.asher.learn;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Queue;
+import java.util.jar.Attributes;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -18,6 +19,9 @@ public class ChapterOneStrings {
 		question4();
 		question5();
 		question6();
+		question7();
+		question8();
+		question9();
 	}
 
 	private static void question1() {
@@ -145,12 +149,12 @@ public class ChapterOneStrings {
 
 		// In place - with assumption that original array contains the required
 		// extra space
-		checkArgument(solution3_2("Jai   ".toCharArray(),"Jai ".length() ).equals("Jai%20"));
-		checkArgument(solution3_2(" Jai  ".toCharArray()," Jai".length()).equals("%20Jai"));
-		checkArgument(solution3_2("      ".toCharArray(),"  ".length()).equals("%20%20"));
-		checkArgument(solution3_2("".toCharArray(),"".length()).equals(""));
-		checkArgument(solution3_2("101".toCharArray(),"101".length()).equals("101"));
-		checkArgument(solution3_2("10 1  ".toCharArray(),"10 1".length()).equals("10%201"));
+		checkArgument(solution3_2("Jai   ".toCharArray(), "Jai ".length()).equals("Jai%20"));
+		checkArgument(solution3_2(" Jai  ".toCharArray(), " Jai".length()).equals("%20Jai"));
+		checkArgument(solution3_2("      ".toCharArray(), "  ".length()).equals("%20%20"));
+		checkArgument(solution3_2("".toCharArray(), "".length()).equals(""));
+		checkArgument(solution3_2("101".toCharArray(), "101".length()).equals("101"));
+		checkArgument(solution3_2("10 1  ".toCharArray(), "10 1".length()).equals("10%201"));
 	}
 
 	// Using new array
@@ -180,8 +184,8 @@ public class ChapterOneStrings {
 
 	private static String solution3_2(char[] charArray, int length) {
 		int offset = 0;
-		for(int i = length - 1; i>=0; i--) {
-			if(charArray[i] != ' ') 
+		for (int i = length - 1; i >= 0; i--) {
+			if (charArray[i] != ' ')
 				charArray[charArray.length - offset++ - 1] = charArray[i];
 			else {
 				charArray[charArray.length - offset++ - 1] = '0';
@@ -191,7 +195,7 @@ public class ChapterOneStrings {
 		}
 		return new String(charArray);
 	}
-	
+
 	private static void question4() {
 		System.out.println("Q4. Check if the String can be converted to a palindrome - ignore whitespaces");
 		// Using boolean array
@@ -201,9 +205,9 @@ public class ChapterOneStrings {
 		checkArgument(solution4_1(" ", "UTF-8"));
 		checkArgument(solution4_1("  ", "UTF-16"));
 		checkArgument(solution4_1("", "ASCII"));
-		checkArgument(! solution4_1("JA\tI", "UTF-16"));
-		checkArgument(! solution4_1("JA\tA  \nI", "UTF-8"));
-		
+		checkArgument(!solution4_1("JA\tI", "UTF-16"));
+		checkArgument(!solution4_1("JA\tA  \nI", "UTF-8"));
+
 		// Using bit vector
 		checkArgument(solution4_2("Palindro Pal\tindro"));
 		checkArgument(solution4_2("Palindro i\tPalindro"));
@@ -211,23 +215,23 @@ public class ChapterOneStrings {
 		checkArgument(solution4_2(" "));
 		checkArgument(solution4_2("  "));
 		checkArgument(solution4_2(""));
-		checkArgument(! solution4_2("JA\tI"));
-		checkArgument(! solution4_2("JA\tA  \nI"));
+		checkArgument(!solution4_2("JA\tI"));
+		checkArgument(!solution4_2("JA\tA  \nI"));
 	}
-
 
 	// Using boolean array
 	private static boolean solution4_1(String str, String charset) {
 		String string = str.replaceAll("\\s+", "");
-		boolean[] letters = new boolean[maxCharacters(charset)]; // default is false
-		for(int i=0; i<string.length(); i++) 
-			letters[string.charAt(i)] = ! letters[string.charAt(i)];
-		
+		boolean[] letters = new boolean[maxCharacters(charset)]; // default is
+																	// false
+		for (int i = 0; i < string.length(); i++)
+			letters[string.charAt(i)] = !letters[string.charAt(i)];
+
 		boolean sawOnce = false;
-		for(boolean letter : letters) {
-			if(sawOnce && letter)
+		for (boolean letter : letters) {
+			if (sawOnce && letter)
 				return false;
-			else if(letter)
+			else if (letter)
 				sawOnce = true;
 		}
 		return true;
@@ -237,47 +241,50 @@ public class ChapterOneStrings {
 	private static boolean solution4_2(String str) {
 		int bitVector = 0;
 		String string = str.replaceAll("\\s+", "");
-		for(int i = 0; i<string.length(); i++) {
+		for (int i = 0; i < string.length(); i++) {
 			bitVector = toggle(bitVector, string.charAt(i));
 		}
-		
+
 		// check if only one bit set
-		// if only one bit is in a number set then the number is a power of 2 (not just a multiple)
-		// hence number - 1 causes all bits < then set bit to be 1 and hence (number) & (number - 1) = 0
+		// if only one bit is in a number set then the number is a power of 2
+		// (not just a multiple)
+		// hence number - 1 causes all bits < then set bit to be 1 and hence
+		// (number) & (number - 1) = 0
 		// eg:- 0100 - 1 = 0011 , 1011 - 1 = 1010
-		if(bitVector == 0 || (bitVector & (bitVector - 1)) == 0)
+		if (bitVector == 0 || (bitVector & (bitVector - 1)) == 0)
 			return true;
 		return false;
 	}
-	
+
 	private static int toggle(int bitVector, char position) {
-		if((bitVector & (1<<position)) == 0) {
+		if ((bitVector & (1 << position)) == 0) {
 			// bit is unset - set it
-			bitVector |= (1<<position);
+			bitVector |= (1 << position);
 		} else {
 			// bit is set - unset it
-			bitVector &= ~(1<<position); 
+			bitVector &= ~(1 << position);
 		}
 		return bitVector;
 	}
-	
+
 	private static void question5() {
-		System.out.println("Q5. Check if the 2 strings are atmostone edit apart, an edit is an insert, delete or replace");
+		System.out.println(
+				"Q5. Check if the 2 strings are atmostone edit apart, an edit is an insert, delete or replace");
 		checkArgument(solution5_1("Jai", "Jai"));
 		checkArgument(solution5_1("", "i"));
 		checkArgument(solution5_1("ai", "i"));
 		checkArgument(solution5_1("iS", "iSl"));
-		checkArgument(! solution5_1("JiS", "iSl"));
-		checkArgument(! solution5_1("JSp", "iSl"));
-		checkArgument(! solution5_1("JSpo", "iSp"));
+		checkArgument(!solution5_1("JiS", "iSl"));
+		checkArgument(!solution5_1("JSp", "iSl"));
+		checkArgument(!solution5_1("JSpo", "iSp"));
 		checkArgument(solution5_1("JSpo", "JSto"));
-		checkArgument(! solution5_1("JSpo", "Jpto"));
+		checkArgument(!solution5_1("JSpo", "Jpto"));
 	}
 
 	private static boolean solution5_1(String string1, String string2) {
-		if(string1.length() > string2.length()) {
+		if (string1.length() > string2.length()) {
 			return isOneAddAway(string1, string2);
-		} else if(string1.length() < string2.length()) {
+		} else if (string1.length() < string2.length()) {
 			return isOneAddAway(string2, string1);
 		}
 		// Equals
@@ -285,14 +292,14 @@ public class ChapterOneStrings {
 	}
 
 	private static boolean isOneAddAway(String large, String small) {
-		if(large.length() - small.length() > 1) {
+		if (large.length() - small.length() > 1) {
 			return false;
 		}
 		boolean diffFound = false;
 		int largeIndex = 0;
-		for(int i = 0; i<small.length(); i++) {
-			if(small.charAt(i) != large.charAt(largeIndex)) {
-				if(diffFound) // one add already done.
+		for (int i = 0; i < small.length(); i++) {
+			if (small.charAt(i) != large.charAt(largeIndex)) {
+				if (diffFound) // one add already done.
 					return false;
 				diffFound = true;
 				largeIndex++;
@@ -300,21 +307,21 @@ public class ChapterOneStrings {
 			largeIndex++;
 		}
 		return true;
-		
+
 	}
 
 	private static boolean isOneReplaceAway(String string1, String string2) {
 		boolean diffFound = false;
-		for(int i =0; i<string1.length(); i++) {
-			if(string1.charAt(i) != string2.charAt(i)) {
-				if(diffFound) // one replace already done
+		for (int i = 0; i < string1.length(); i++) {
+			if (string1.charAt(i) != string2.charAt(i)) {
+				if (diffFound) // one replace already done
 					return false;
 				diffFound = true;
 			}
 		}
 		return true;
 	}
-	
+
 	private static void question6() {
 		System.out.println("Q6. Compress adjacent characters in a string");
 		checkArgument(solution6_1("abca").equals("abca"));
@@ -324,17 +331,16 @@ public class ChapterOneStrings {
 		checkArgument(solution6_1("abcc").equals("abc2"));
 	}
 
-	
 	private static String solution6_1(String string) {
-		if(string.length() < 2)
+		if (string.length() < 2)
 			return string;
 		StringBuilder builder = new StringBuilder();
 		char[] ar = string.toCharArray();
 		int count = 1;
 		char previous = ar[0];
-		for(int i = 1; i<ar.length; i++) {
-			if(ar[i] != previous) {
-				if(count > 1) {
+		for (int i = 1; i < ar.length; i++) {
+			if (ar[i] != previous) {
+				if (count > 1) {
 					builder.append(previous);
 					builder.append(count);
 				} else {
@@ -343,14 +349,14 @@ public class ChapterOneStrings {
 				count = 1;
 				previous = ar[i];
 			} else {
-				count ++;
+				count++;
 			}
 		}
-		
+
 		// handling last character
-		if(count > 1) {
+		if (count > 1) {
 			builder.append(previous);
-			builder.append(count);			
+			builder.append(count);
 		} else {
 			builder.append(previous);
 		}
@@ -365,5 +371,145 @@ public class ChapterOneStrings {
 		if (charset == "UTF-16")
 			return 65536;
 		return 0;
+	}
+
+	private static void question7() {
+		System.out.println("Q7. Rotate Matrix - REDO the in place solution");
+		char[][] ar1 = { { 'a', 'b', 'c' }, { 'd', 'e', 'f' }, { 'g', 'h', 'i' } };
+		char[][] resultAr1 = { { 'c', 'f', 'i' }, { 'b', 'e', 'h' }, { 'a', 'd', 'g' } };
+		checkArgument(toString(solution7_1(ar1)).equals(toString(resultAr1)));
+
+		char[][] ar2 = { { 'a', 'b' }, { 'd', 'e' } };
+		char[][] resultAr2 = { { 'b', 'e' }, { 'a', 'd' } };
+		checkArgument(Arrays.deepEquals(solution7_1(ar2), resultAr2));
+
+		char[][] ar3 = { { 'a', 'b', 'c' }, { 'd', 'e', 'f' }, { 'g', 'h', 'i' } };
+		char[][] resultAr3 = { { 'c', 'f', 'i' }, { 'b', 'e', 'h' }, { 'a', 'd', 'g' } };
+		checkArgument(toString(solution7_2(resultAr3, 3)).equals(toString(ar3)));
+
+		char[][] ar4 = { { 'a', 'b' }, { 'd', 'e' } };
+		char[][] resultAr4 = { { 'b', 'e' }, { 'a', 'd' } };
+		checkArgument(Arrays.deepEquals(solution7_2(resultAr4, 2), ar4));
+	}
+
+	// Method requires a new matrix to be constructed - Clockwise
+	private static char[][] solution7_1(char[][] ar) {
+		char[][] newMAtrix = new char[ar.length][ar.length];
+		for (int i = 0; i < ar.length; i++) {
+			for (int j = 0; j < ar[i].length; j++) {
+				newMAtrix[i][j] = ar[j][ar.length - i - 1];
+			}
+		}
+		return newMAtrix;
+	}
+
+	// Method requires a new matrix to be constructed - Anti-clockwise
+	private static char[][] solution7_2(char[][] matrix, int n) {
+		for (int layer = 0; layer < n / 2; ++layer) {
+			int first = layer;
+			int last = n - 1 - layer;
+			for (int i = first; i < last; ++i) {
+				int offset = i - first;
+				char top = matrix[first][i]; // save top
+
+				// left -> top
+				matrix[first][i] = matrix[last - offset][first];
+
+				// bottom -> left
+				matrix[last - offset][first] = matrix[last][last - offset];
+
+				// right -> bottom
+				matrix[last][last - offset] = matrix[i][last];
+
+				// top -> right
+				matrix[i][last] = top; // right <- saved top
+			}
+		}
+		return matrix;
+	}
+
+	private static String toString(char[][] a) {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < a.length; i++) {
+			for (int j = 0; j < a[i].length; j++) {
+				builder.append(a[i][j]);
+				builder.append(' ');
+			}
+			builder.append('\n');
+		}
+		return builder.toString();
+	}
+
+	private static void question8() {
+		System.out.println("Q8. Given an NXN matrix, if the element is 0 - nullify (0) the entire row and column");
+		char[][] ar1 = { { 'a', 'b', 'c' }, { 'd', '0', 'f' }, { 'g', 'h', 'i' } };
+		char[][] resultAr1 = { { 'a', '0', 'c' }, { '0', '0', '0' }, { 'g', '0', 'i' } };
+		checkArgument(Arrays.deepEquals(solution8_1(ar1), resultAr1));
+		char[][] ar2 = { { 'a', 'b', 'c' }, { 'd', 'e', 'f' }, { 'g', 'h', '0' } };
+		char[][] resultAr2 = { { 'a', 'b', '0' }, { 'd', 'e', '0' }, { '0', '0', '0' } };
+		checkArgument(Arrays.deepEquals(solution8_1(ar2), resultAr2));
+		char[][] ar3 = { { 'a', 'b', 'c' }, { 'd', 'e', 'f' }, { 'g', 'h', 'i' } };
+		char[][] resultAr3 = { { 'a', 'b', 'c' }, { 'd', 'e', 'f' }, { 'g', 'h', 'i' } };
+		checkArgument(Arrays.deepEquals(solution8_1(ar3), resultAr3));
+	}
+
+	private static char[][] solution8_1(char[][] ar) {
+		boolean firstRowHasZero = false;
+		boolean firstColumnHasZero = false;
+
+		for (int i = 0; i < ar.length; i++) {
+			if (ar[i][0] == '0') {
+				firstColumnHasZero = true;
+				break;
+			}
+		}
+
+		for (int i = 0; i < ar[0].length; i++) {
+			if (ar[0][i] == '0') {
+				firstRowHasZero = true;
+				break;
+			}
+		}
+
+		for (int i = 1; i < ar.length; i++) {
+			for (int j = 1; j < ar[i].length; j++) {
+				if (ar[i][j] == '0') {
+					ar[0][j] = '0';
+					ar[i][0] = '0';
+				}
+			}
+		}
+
+		for (int i = 1; i < ar.length; i++) {
+			for (int j = 1; j < ar[i].length; j++) {
+				if (ar[0][j] == '0' || ar[i][0] == '0')
+					ar[i][j] = '0';
+			}
+		}
+
+		if (firstColumnHasZero) {
+			for (int i = 0; i < ar.length; i++) {
+				ar[i][0] = '0';
+			}
+		}
+
+		if (firstRowHasZero) {
+			for (int j = 0; j < ar[0].length; j++) {
+				ar[0][j] = '0';
+			}
+		}
+		return ar;
+	}
+
+	private static void question9() {
+		System.out.println("Q9. Determine is a string is left or right shifted");
+		checkArgument(solution9_1("Jai", "aiJ"));
+		checkArgument(!solution9_1("Jai", "aJ"));
+		checkArgument(!solution9_1("J i", " Ji"));
+		checkArgument(solution9_1("J i", "iJ "));
+	}
+
+	private static boolean solution9_1(String string1, String string2) {
+		return (string1.length() == string2.length()) && (string1 + string1).contains(string2);
 	}
 }
