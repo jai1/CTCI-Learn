@@ -12,7 +12,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 // UTF-32 - 32 bits - 4 bytes - should fit int but doesn;t
 public class ChapterOneStrings {
 	public static void run() {
-		System.out.println("Running Chapter 1 - Strings");
+		System.out.println("\n****\nRunning Chapter 1 - Strings\n****");
 		question1();
 		question2();
 		question3();
