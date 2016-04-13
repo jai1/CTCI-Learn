@@ -17,7 +17,7 @@ import javax.naming.InitialContext;
 import javax.naming.NameAlreadyBoundException;
 import javax.swing.table.TableModel;
 
-public class ChapterThreeLinkedList {
+public class ChapterThreeStacksAndQueues {
 
 	public static void run() {
 		System.out.println("\n****\nRunning Chapter 3 - Stacks and Queues\n****");
