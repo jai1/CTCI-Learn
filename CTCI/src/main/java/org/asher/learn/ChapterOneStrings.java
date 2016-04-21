@@ -1,7 +1,9 @@
 package org.asher.learn;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Queue;
 import java.util.jar.Attributes;
 
@@ -22,6 +24,33 @@ public class ChapterOneStrings {
 		question7();
 		question8();
 		question9();
+		extraQuestion();
+	}
+
+	private static void extraQuestion() {
+		// Combination means that order doesn't matter
+		// Order matters in Permutations
+		System.out.println("Extra Question: Find all permutations of a String");
+		solutionExtra();
+	}
+
+	private static void solutionExtra() {
+		// TODO Auto-generated method stub
+		List<String> list = new ArrayList<String>();
+		String string = "Jai";
+		findPermutation("", string, list);
+		checkArgument(list.size() == factorial(string.length()));
+
+	}
+
+	private static void findPermutation(String prefix, String str, List<String> list) {
+		int n = str.length();
+		if (n == 0) {
+			list.add(prefix);
+			return;
+		}
+		for (int i = 0; i < n; i++)
+			findPermutation(prefix + str.charAt(i), str.substring(0, i) + str.substring(i + 1, n), list);
 	}
 
 	private static void question1() {
@@ -511,5 +540,15 @@ public class ChapterOneStrings {
 
 	private static boolean solution9_1(String string1, String string2) {
 		return (string1.length() == string2.length()) && (string1 + string1).contains(string2);
+	}
+	
+	public static int factorial(int n) {
+	    int x = 1;
+	    int y = 1;
+	    for (int i = 1; i <= n; i++) {
+	        y = x * i;
+	        x = y;
+	    }
+	    return y;
 	}
 }

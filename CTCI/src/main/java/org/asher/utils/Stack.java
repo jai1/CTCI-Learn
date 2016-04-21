@@ -1,12 +1,12 @@
 package org.asher.utils;
 
-public class Stack<T> implements StackInterface<T>{
+public class Stack<T> implements StackInterface<T> {
 	protected LinkedListNode<T> head = null;
 
 	public LinkedListNode<T> getHead() {
 		return head;
 	}
-	
+
 	public int size() {
 		int size = 0;
 		LinkedListNode<T> node = head;
@@ -32,7 +32,7 @@ public class Stack<T> implements StackInterface<T>{
 	}
 
 	public void push(T data) {
-		LinkedListNode<T> node =  new LinkedListNode<T>(data);
+		LinkedListNode<T> node = new LinkedListNode<T>(data);
 		node.next = head;
 		head = node;
 	}
@@ -44,8 +44,8 @@ public class Stack<T> implements StackInterface<T>{
 	public String toString() {
 		StringBuilder build = new StringBuilder();
 		LinkedListNode<T> node = head;
-		while(node != null) {
-			if(node.data == null)
+		while (node != null) {
+			if (node.data == null)
 				build.append("| ").append("NULL").append(" |");
 			else
 				build.append("| ").append(node.data.toString()).append(" |");
@@ -54,5 +54,20 @@ public class Stack<T> implements StackInterface<T>{
 		}
 		build.append("| ").append("NULL").append(" |");
 		return build.toString();
+	}
+
+	public Stack<T> reverse() {
+		LinkedListNode<T> prev = null;
+		LinkedListNode<T> node = head;
+		LinkedListNode<T> next = null;
+
+		while (node != null) {
+			next = node.next;
+			node.next = prev;
+			prev = node;
+			head = node;
+			node = next;
+		}
+		return this;
 	}
 }
