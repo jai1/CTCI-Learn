@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="CTCI/src/main/java"/>
+	<classpathentry kind="src" path="GoogleCodeJam/src/main/java"/>
+	<classpathentry kind="src" path="Temp/src/main/java"/>
+	<classpathentry kind="lib" path="CTCI/target/CTCI-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="GoogleCodeJam/target/GoogleCodeJam-0.0.1.jar"/>
+	<classpathentry kind="lib" path="Temp/target/Temp-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="CTCI/target/classes"/>
+</classpath>
