@@ -23,10 +23,9 @@ void RateLimiter::aquire(unsigned long requestedPermits) {
 	aquireWithinLock(requestedPermits);
 }
 
-bool RateLimiter::tryAquire(unsigned long requestedPermits, unsigned long timeoutInSeconds) {
+bool RateLimiter::tryAquire(unsigned long requestedPermits, Clock::duration timeout) {
 	Lock lock(mutex_);
-	Clock::time_point now = Clock::now() + std::chrono::seconds(timeoutInSeconds);
-	Clock::duration timeElapsed = now - lastPermitAcquiredTime_;
+	Clock::duration timeElapsed = Clock::now() + timeout - lastPermitAcquiredTime_;
 	unsigned long availablePermits = std::min<unsigned long>(maxServablePermits_, unusedPermits_ + timeElapsed / intervalInMillisecondsBetweenPermits_);
 	if (requestedPermits > availablePermits) {
 		return false;

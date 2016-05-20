@@ -16,7 +16,7 @@ public:
     // because the evaluation of function arguments is not sequenced.
     RateLimiter(double rateInPermitsPerSecond);
     void aquire(unsigned long requestedPermits=1);
-    bool tryAquire(unsigned long requestedPermits=1, unsigned long timeoutInSeconds=0);
+    bool tryAquire(unsigned long requestedPermits=1, Clock::duration timeout = std::chrono::seconds(0));
 private:
     boost::mutex mutex_;
     const unsigned long maxServablePermits_;
