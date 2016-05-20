@@ -24,6 +24,9 @@ public class Main {
 //			System.out.println(str);
 //		}
 		
+		// This also works
+		// strings.forEach((str) -> System.out.println(str));
+		
 		strings.forEach(str -> System.out.println(str));
 		
 		Comparator<String> comp = (str1, str2) ->
@@ -31,7 +34,7 @@ public class Main {
 			return str1.compareToIgnoreCase(str2);
 		};
 		Collections.sort(strings, comp);
-		
+		z
 		System.out.println("Sort with comparator");
 
 		//Traverse with iterator

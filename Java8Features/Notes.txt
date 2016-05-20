@@ -1,0 +1,34 @@
+Lambda:- 
+	a. Lambda is an anonymous functions - used locally
+	b. It avoids extraneous .class files for every interface if you want to use the code only once
+	c. It enables you to write concise more readable code.
+	d. Lambda expressions can only appear in places where they will be assigned to a variable whose type is a functional interface.
+	   A functional interface (aka SAM interfaces) has a SINGLE abstract method. eg:- Runnable, Callable, Comparator, TimerTask
+	e. Using Lambdas, Inner classes or Normal classes give the same performance - lambdas are useful for code maintenance only.
+	
+	
+	Solutions:-
+	
+	02_Lambdas/FunctionalInterface_solution
+	- Using Lambdas with User defined Functional interfaces (with and w/o arguments).
+	- Once the variable of type functional interface is instantiated (with or w/o) lambda you can use it to call interface functions like normal classes.
+	
+	02_Lambdas/BuiltInInterface_solution
+	- Using Lambdas with inbuilt Functional interfaces
+	- Using multiline and single line lambdas
+	- Using Comparator and Runnable
+	- Difference between inner class and lambda (UseRunnable.java)
+	- CMD/CTRL + 1 on eclipse for quick fix
+	
+	02_Lambdas/TraverseCollection_solution
+	- for (String str : strings), iterator
+	- Consumer interface using lambda
+	- forEach Method with lambda
+	
+	02_Lambdas/FilterCollection_solution
+	- Predicate interface
+	- filter and predicate
+	- parenthesis or no parenthesis for arguments make no difference
+	- java.util.function -> Functional interface
+	
+	02_Lambdas/MethodReference_solution
