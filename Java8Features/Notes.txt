@@ -32,3 +32,111 @@ Lambda:-
 	- java.util.function -> Functional interface
 	
 	02_Lambdas/MethodReference_solution
+	- Method reference can be named or unnamed
+	- They can be used for:-
+	a. Static method - Person::compareAges used instead of compareTo interface (need class name)
+	b. Instance method of an object - this :: compareAges of InstaceMethodReferences used instead of compareTo interface (need object name)
+	c. Instance method of an arbitrary object - refer to it as a static method
+	d. References to a constructor method
+	- Need to read up or experiment on how to do c and d
+	
+	
+	02_Lambdas/DefaultMethods_solution
+	- As the name suggests they are used to defined default methods for interfaces
+	- default key word
+	- since it is an interface can't use private members/variables in the method (since interfaces have only public members and public final variables)
+	- default method need not be redefined in the final classes
+	- default makes an interface behave as an abstract class.
+	- default methods can be overridden by the final classes.
+	
+	02_Lambdas/StaticMethods_solution
+	- interfaces can define and implement static methods.
+	- This static method can be used as like normal static methods i.e using interface name
+	  (PersonInterface.getPersonInfo())
+	  
+	  
+	========================
+	
+	03_Streams/TraversingStreams_solution
+	- Used for converting collections into stream of data.
+	- Deals with data as a whole instead of dealing with each item individually
+	- Don't have to worry about the details of looping or traversing.
+	- **Create a stream object** from collection then use it for:-
+		- Traversing - foreach
+		- Filtering - filter
+		- Aggregating
+	- Streams can be created for files also
+	- Two kinds of collection streams:-
+	    a. Sequential - deal with items one at a time.
+	    b. Parallel - deals with items in parallel
+	                - person.parallelStream() and person.stream().parallel() both are same
+	                - As expected the results are not in order
+	                - Used for aggregate processing
+	                - Thread creation can take time, so use only if collection is large
+	                - Do own bench marking before deciding between stream and parallel stream
+	03_Streams/CreatingStreams_solution
+	- Convert arrays to streams w/o needing an collection object like ArrayList.
+	    a. Stream.of(array) and Arrays.stream(array) both do the same.
+	- java.util.Stream - interface
+	
+	03_Streams/AggregatingStreams_solution
+	- Using parallel stream 
+	- example of unordered execution in parallel stream
+	- Do own bench marking before deciding between stream and parallel stream
+	- Map is used to convert one object to another (usually complex object to simple object)
+	    - map
+	    - mapToInt
+	    - mapToDouble
+	    - mapToLong
+	- OptionalInt, OptionalDouble etc to avoid divide by zero using .isPresent()
+	- StreamInteger, StreamLong etc .....
+	
+============
+
+Go through once later
+New API for date and time
+They are thread safe.
+
+============
+
+Nashorn's JVM for using Java Script
+
+============
+
+	06_Miscellaneous/JoiningString_solution
+    - String.join(separator, variable number of parameters)
+    	- separator can be multi-character like "and"
+    - java.util.StringJoiner
+    	- setEmptyValue
+    	- separator, starter, ender
+        - Builder design pattern
+    	    - sj.add(val1).add(val2).add(val3);
+        - Can merge multiple string joiners
+    
+    06_Miscellaneous/SearchFile_solution
+    - Using Stream to traverse files.
+    - **try with resources syntax** used with **AutoCloseable**
+      http://tutorials.jenkov.com/java-exception-handling/try-with-resources.html
+    - **Optional class**
+      http://www.tutorialspoint.com/java8/java8_optional_class.htm
+    - Optional.get().toString() vs Optional.toString()
+    
+    
+    - Enhancements in Concurrency
+    	a. New Methods for handling races
+    	b. Improvements to ConcurrentHAshMap
+    	c. Parallel operations with arrays
+    	d. New methods for composing async operations
+    
+    - New Collections Methods
+    	Iterable : forEach()
+    	Collection: removeIf()
+    	List: replaceAll(), sort
+    	Iterator: forEachRemaining()
+    	Map: forEach(), replace(), remove() and more()
+    	
+    - Base64 class with encoder and decoder
+    
+    - Improvements to Annotations
+    
+    - JDBC improvements 
