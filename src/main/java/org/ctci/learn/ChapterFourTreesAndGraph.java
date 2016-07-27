@@ -3,12 +3,17 @@ package org.ctci.learn;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.ctci.utils.BinarySearchTree;
@@ -48,6 +53,7 @@ public class ChapterFourTreesAndGraph<T> {
 		question11();
 		question12();
 		extraQuestion1();
+		extraQuestion2();
 	}
 
 	private static void question9() {
@@ -845,9 +851,9 @@ public class ChapterFourTreesAndGraph<T> {
 		a.incomingNodes.add(c);
 		b.incomingNodes.add(c);
 		Graph<String> g = new Graph<String>();
-		g.add(a);
-		g.add(b);
-		g.add(c);
+		g.addNode(a);
+		g.addNode(b);
+		g.addNode(c);
 		Stack<GraphNode<String>> order = orderTopologically(g);
 		checkArgument(order.pop() == c);
 		checkArgument(order.pop() == b);
@@ -856,7 +862,7 @@ public class ChapterFourTreesAndGraph<T> {
 		// Adding D as an independent node
 		g.reset();
 		GraphNode<String> d = new GraphNode<String>("D");
-		g.add(d);
+		g.addNode(d);
 		order = orderTopologically(g);
 
 		checkArgument(order.pop() == c);
@@ -885,8 +891,8 @@ public class ChapterFourTreesAndGraph<T> {
 
 	private static <T> Stack<GraphNode<T>> orderTopologically(Graph<T> g) {
 		Stack<GraphNode<T>> stack = new Stack<GraphNode<T>>();
-		for (GraphNode<T> node : g.nodes) {
-			if (node.state == GraphState.START && !doDFS(node, stack))
+		for (T key : g.nodes.keySet()) {
+			if (g.nodes.get(key).state == GraphState.START && !doDFS(g.nodes.get(key), stack))
 				return null;
 		}
 		return stack.reverse();
@@ -1108,10 +1114,110 @@ public class ChapterFourTreesAndGraph<T> {
 	private static <T> void convertBSTToArrayList(BinaryTreeNode<T> node, ArrayList<T> list) {
 		if (node == null)
 			return;
-
 		convertBSTToArrayList(node.left, list);
 		list.add(node.data);
 		convertBSTToArrayList(node.right, list);
+	}
+
+
+	private static void extraQuestion2() {
+		System.out.println("Extra: Find the shortest path from a node to all other nodes in a directional graph.");
+		System.out.println("Input - A File of the format:-");
+		System.out.println("Source Node (Alphabet)");
+		System.out.println("Edge denoted by 'Source' 'Destination' 'Cost'");
+		extraSolution2("/Users/jai1/GitHub/CTCI-Learn/src/main/resources/DijkstrasInput.txt");
+	}
+	
+	private static void extraSolution2(String fileName) {
+		Graph<Character> graph = null;
+		try {
+			// Returns a Graph with the source node cost = 0, rest INTEGER.MAX.VALUE
+			graph = readFile(fileName);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+		
+			PriorityQueue<GraphNode<Character>> queue = new PriorityQueue<GraphNode<Character>>(10, (GraphNode<Character> a, GraphNode<Character> b) -> {
+				// For Ascending order
+				return a.getNodeCost().compareTo(b.getNodeCost());
+			});
+			
+			for (Character c : graph.nodes.keySet()) {
+				queue.add(graph.nodes.get(c));
+			}
+			
+			while (! queue.isEmpty()) {
+				GraphNode<Character> node = queue.remove();
+//				System.err.println("++++++++++++++++++++++++++++");
+//				System.err.println(node.nodeID + " " + node.getNodeCost());
+//				System.err.println("***************************");
+				
+				for (int i = 0; i< node.outgoingNodes.size(); i++) {
+//					System.err.println(node.outgoingNodes.get(i).nodeID 
+//							+ " "  + node.outgoingNodes.get(i).getNodeCost() 
+//							+ " " + node.outgoingNodesWeights.get(i));
+					Integer newCost = node.getNodeCost() + node.outgoingNodesWeights.get(i);
+					if (newCost  < node.outgoingNodes.get(i).getNodeCost()) {
+						queue.remove(node);
+						node.outgoingNodes.get(i).setNodeCost(newCost);
+						queue.add(node);
+					}
+				}
+//				System.err.println("++++++++++++++++++++++++++++");
+			}
+			
+			
+//			System.err.println("----Final list----");
+//			for (Character character : graph.nodes.keySet()) {
+//				System.err.println("***************************");
+//				System.err.println(graph.nodes.get(character).nodeID + " " + graph.nodes.get(character).getNodeCost());
+//				System.err.println("***************************");				
+//			}
+			
+			assert(graph.nodes.get('a').getNodeCost() == 0);
+			assert(graph.nodes.get('b').getNodeCost() == 7);
+			assert(graph.nodes.get('c').getNodeCost() == 9);
+			assert(graph.nodes.get('d').getNodeCost() == 11);
+			assert(graph.nodes.get('e').getNodeCost() == 20);
+			assert(graph.nodes.get('f').getNodeCost() == 20);
+
+	}
+
+	private static Graph<Character> readFile(String fileName) throws FileNotFoundException {
+		Scanner scanner = new Scanner(new File(fileName));
+		Graph<Character> graph = new Graph<Character>();
+		Character source = scanner.next(".").charAt(0);
+
+		while (scanner.hasNextLine()) {
+			Character edgeStart = scanner.next(".").charAt(0);
+			Character edgeEnd = scanner.next(".").charAt(0);
+			Integer cost = scanner.nextInt();
+			
+			GraphNode<Character> edgeEndNode =  graph.nodes.get(edgeEnd);
+			if (edgeEndNode == null)
+				edgeEndNode = new GraphNode<Character>(edgeEnd);
+			
+			GraphNode<Character> edgeStartNode = graph.nodes.get(edgeStart);
+			if (edgeStartNode == null)
+				edgeStartNode = new GraphNode<Character>(edgeStart);
+			
+			edgeStartNode.outgoingNodes.add(edgeEndNode);
+			edgeStartNode.outgoingNodesWeights.add(cost);
+			
+			edgeStartNode.setNodeCost(Integer.MAX_VALUE);
+			edgeEndNode.setNodeCost(Integer.MAX_VALUE);
+			graph.nodes.put(edgeStart, edgeStartNode);
+			graph.nodes.put(edgeEnd, edgeEndNode);
+		}
+		
+		GraphNode<Character> sourceNode = graph.nodes.get(source);
+		if (sourceNode == null)
+			sourceNode = new GraphNode<Character>(source);
+		sourceNode.setNodeCost(0);
+		graph.addNode(sourceNode);
+		return graph;
 	}
 
 }

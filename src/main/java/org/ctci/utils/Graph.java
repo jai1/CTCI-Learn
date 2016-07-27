@@ -1,19 +1,24 @@
 package org.ctci.utils;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
 
+
+//TODO - this is not a general graph node - clean the nomenclature
 public class Graph<T> {
 	public static enum GraphState {START, INPROGRESS, COMPLETE};
-	public List<GraphNode<T>> nodes = new LinkedList<GraphNode<T>>();
+	public HashMap<T, GraphNode<T>> nodes = new HashMap<T, GraphNode<T>>();
 	
-	public boolean add(GraphNode<T> g) {
-		return nodes.add(g);
+	public boolean addNode(GraphNode<T> g) {
+		if (nodes.containsKey(g.nodeID)) {
+			return false;
+		}
+		nodes.put(g.nodeID, g);
+		return true;
 	}
 	
 	public void reset() {
-		for(GraphNode<T> node : nodes) {
-			node.state = GraphState.START;
+		for(T key : nodes.keySet()) {
+			nodes.get(key).state = GraphState.START;
 		}
 	}
 }
