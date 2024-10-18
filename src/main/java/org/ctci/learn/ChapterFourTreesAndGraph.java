@@ -1125,7 +1125,7 @@ public class ChapterFourTreesAndGraph<T> {
 		System.out.println("Input - A File of the format:-");
 		System.out.println("Source Node (Alphabet)");
 		System.out.println("Edge denoted by 'Source' 'Destination' 'Cost'");
-		extraSolution2("/Users/jai1/GitHub/CTCI-Learn/src/main/resources/DijkstrasInput.txt");
+		extraSolution2("/DijkstrasInput.txt");
 	}
 	
 	private static void extraSolution2(String fileName) {
