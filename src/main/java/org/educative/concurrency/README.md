@@ -323,18 +323,37 @@ StampedLock is like a library with different access levels:
 Lazy initialization means that we initialize the object only if getInstance is called.
 ```
 public class Singleton {
-    private static Singleton instance;
+    private static volatile Singleton instance;
 
-    private Superman() {
+    private Singleton() {}
+
+    public static Singleton getInstance() {
+        if (instance == null) {
+            synchronized (Singleton.class) {
+                if (instance == null) {
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+
+```
+
+Using Singleton Holder
+The JVM guarantees that the initialization of a class (including the execution of its static initializers) is done in a thread-safe manner.  Only one thread will be responsible for initializing the class, and all other threads will be blocked until initialization is complete.
+```
+public class Singleton {
+
+    private Singleton() {}
+
+    private static class SingletonHolder {
+        private static final Singleton instance = new Singleton();
     }
 
-    public synchronized static Singleton getInstance() {
-
-        if (instance == null) {
-            instance = new Singleton();
-        }
-
-        return instance;
+    public static Singleton getInstance() {
+        return SingletonHolder.instance;
     }
 }
 ```
